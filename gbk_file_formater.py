@@ -14,15 +14,16 @@ import argparse
 import sys
 
 parser=argparse.ArgumentParser(
-    description='''Goal: remove "-" from begining of lines in FASTA files.''')
+    description='''Utility: Output files from Prokka annotation can have some 
+    incompatibilities with the required antiSMASH input.''')
 
-__file__ = "orf_annotation.py"
+__file__ = "gbk_file_formater.py"
 __author__ = 'Sandra Godinho Silva (sandragodinhosilva@gmail.com)'
-__version__ = '0.2'
-__date__ = '05-12-2020'
+__version__ = '0.3'
+__date__ = '02-02-2021'
 
 parser.add_argument('inputDirectory', 
-		help='Specify the directory containing *.fa files')
+		help='Specify the directory containing *.gbk files')
 
 # Execute parse_args()
 args = parser.parse_args()
@@ -34,7 +35,8 @@ os.chdir(curdir)
 
 gbkfiles = []
 for file in glob.glob("*.gbk"):
-    gbkfiles.append(file)
+    if "_out.gbk" not in file:
+	gbkfiles.append(file)
 
 for filename in gbkfiles:
     d ={}
@@ -70,5 +72,3 @@ for filename in gbkfiles:
                 output.write(line)
         f.close()
         output.close()
- 
-__date__ = '26 May 2020'        
