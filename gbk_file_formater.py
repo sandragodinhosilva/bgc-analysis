@@ -10,6 +10,9 @@
 
 import os
 import glob
+import argparse
+import sys
+
 parser=argparse.ArgumentParser(
     description='''Goal: remove "-" from begining of lines in FASTA files.''')
 
