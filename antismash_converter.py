@@ -24,8 +24,8 @@ parser=argparse.ArgumentParser(
 	''')
 
 __author__ = 'Sandra Godinho Silva (sandragodinhosilva@gmail.com)'
-__version__ = '0.4'
-__date__ = '05-12-2020'
+__version__ = '0.5'
+__date__ = '29-03-2022'
 
 parser.add_argument('inputDirectory', help='Path to the input directory.')
 
@@ -63,7 +63,7 @@ NRPS_PKS_hybrid =["T1PKS,NRPS", "NRPS,T1PKS", "NRPS,transAT-PKS",
 				  "NRPS,hglE-KS,T1PKS", "transAT-PKS,NRPS,PKS-like",
 				  "transAT-PKS,transAT-PKS-like,NRPS-like,PKS-like,T3PKS",
 				  "T1PKS,hglE-KS,NRPS,siderophore", "transAT-PKS,NRPS,PKS-like",
-				  "NRPS,T1PKS,siderophore",
+				  "NRPS,T1PKS,siderophore","NRPS-like,T1PKS,NRPS"
 				  ]
 # transAT_PKS: only transAT_PKS (may have other types of PKS)
 transAT_PKS = ["transAT-PKS","transatpks","transAT-PKS,PKS-like",
@@ -106,7 +106,7 @@ Siderophore = ["siderophore"]
 #Terpene
 Terpene=["terpene"]
 # only RiPPs
-RiPPs= ["lantipeptide", "thiopeptide", "bacteriocin", "linaridin", "proteusin", 
+RiPPs= ["RiPP-like","RRE-containing","RRE-containing,RiPP-like","lantipeptide", "thiopeptide", "bacteriocin", "linaridin", "proteusin", 
 		   "cyanobactin", "glycocin", "LAP", "lassopeptide", "sactipeptide", 
 		   "bottromycin", "head_to_tail", "microcin", "microviridin", 
 		   "lanthipeptide", "lipolanthine", "RaS-RiPP", "fungal-RiPP",
@@ -115,10 +115,14 @@ RiPPs= ["lantipeptide", "thiopeptide", "bacteriocin", "linaridin", "proteusin",
 		   "proteusin,LAP,bacteriocin","LAP,proteusin,bacteriocin",
 		   "TfuA-related"
 		   ]
+Arylpolyene = ["arylpolyene"]
+
+Resorcinol = ["resorcinol"]
+
 # Others: diversified combinations and bgcs that don't fit previous classes
-Others = ["acyl_amino_acids", "arylpolyene", "aminocoumarin", "ectoine", 
+Others = ["acyl_amino_acids","aminocoumarin", "ectoine", 
 			"butyrolactone", "nucleoside", "melanin", "phosphoglycolipid", 
-			"phenazine", "phosphonate", "other", "cf_putative", "resorcinol", 
+			"phenazine", "phosphonate", "other", "cf_putative", 
 			"indole", "ladderane", "PUFA", "furan", "hserlactone", "fused", 
 			"cf_fatty_acid",  "blactam", "fatty_acid" "PpyS-KS", 
 			"CDPS", "betalactone", "PBD", "tropodithietic-acid", "NAGGN", 
@@ -231,6 +235,7 @@ df_major.columns = ["Genome","Region_Type","antiSMASH_classif","From","To",
 df_major["To"] = df_major["To"].str.replace(",","")
 df_major["To"] = pd.to_numeric(df_major["To"])
 df_major["From"] = df_major["From"].str.replace(",","")
+df_major["From"] = df_major["From"].fillna("1")
 df_major["From"] = pd.to_numeric(df_major["From"])
 
 df_major["Size(bp)"] = df_major["To"] - df_major["From"]
@@ -272,13 +277,17 @@ for x in (range(len(df_major))):
 		df_major.iloc[x,9] ="Saccharides"
 		#print(a +" is Saccharides")        
 	elif a in Terpene:
-		df_major.iloc[x,9]="terpene"
+		df_major.iloc[x,9]="Terpene"
 		#print(a +" is terpene")
 	elif a in Siderophore:
 		df_major.iloc[x,9] ="Siderophore"
 		#print(a +" is siderophore")            
 	elif a in RiPPs:
 		df_major.iloc[x,9] ="RiPPs"
+	elif a in Arylpolyene:
+		df_major.iloc[x,9] ="Arylpolyene"
+	elif a in Resorcinol:
+		df_major.iloc[x,9] ="Resorcinol"
 	elif a in Others:
 		df_major.iloc[x,9] ="Others"
 	else:
@@ -342,11 +351,15 @@ def BGC_classifier(df):
 			dd[a] ="Saccharides"
 		#print(a +" is Saccharides")        
 		elif a in Terpene:
-		   dd[a] ="terpene"
+		   dd[a] ="Terpene"
 		#print(a +" is terpene")
 		elif a in Siderophore:
 			dd[a] ="Siderophore"
-		#print(a +" is siderophore")            
+   		#print(a +" is siderophore")
+		elif a in Arylpolyene:
+			dd[a]  ="Arylpolyene"
+		elif a in Resorcinol:
+			dd[a]  ="Resorcinol"            
 		elif a in RiPPs:
 			dd[a] ="RiPPs"
 		#print(a +" is RiPPNRPS = ["NRPS-like", "NRPS"]
